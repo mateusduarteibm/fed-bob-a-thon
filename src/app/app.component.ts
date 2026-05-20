@@ -87,7 +87,7 @@ export class AppComponent {
     this.errorMessage.set('');
 
     this.#http
-      .get<ApiCourse[]>('http://bff-bob-a-thon-env.eba-kipvpqnj.us-east-1.elasticbeanstalk.com/api/contents')
+      .get<ApiCourse[]>('https://bff-bob-a-thon-env.eba-kipvpqnj.us-east-1.elasticbeanstalk.com/api/contents')
       .subscribe({
         next: (response) => {
           const courses = response.map((course, index) => this.mapCourse(course, index));
