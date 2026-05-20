@@ -1,0 +1,150 @@
+<div class="page-shell">
+  <section class="hero-section">
+    <div class="hero-copy">
+      <span class="eyebrow">Hackathon edition</span>
+      <h1>{{ title }}</h1>
+      <p class="hero-description">
+        Descubra conteúdos selecionados para acelerar sua jornada em tecnologia,
+        produto e inovação. Uma experiência moderna, visual e pronta para destacar
+        os cursos disponíveis da plataforma.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#courses" class="primary-action">Explorar cursos</a>
+        <button type="button" class="secondary-action" (click)="retry()">
+          Atualizar lista
+        </button>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric-card">
+          <strong>{{ courses().length }}</strong>
+          <span>Cursos disponíveis</span>
+        </div>
+        <div class="metric-card">
+          <strong>4.9/5</strong>
+          <span>Avaliação média</span>
+        </div>
+        <div class="metric-card">
+          <strong>+3k</strong>
+          <span>Aprendizes impactados</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="orb orb-one"></div>
+      <div class="orb orb-two"></div>
+
+      @if (featuredCourse(); as featured) {
+        <article class="featured-card">
+          <span class="featured-badge">Destaque da semana</span>
+          <img [src]="featured.imageUrl" [alt]="featured.title" />
+          <div class="featured-content">
+            <span class="chip">{{ featured.category }}</span>
+            <h2>{{ featured.title }}</h2>
+            <p>{{ featured.description }}</p>
+
+            <div class="featured-meta">
+              <span>{{ featured.author }}</span>
+              <span>{{ featured.duration }}</span>
+              <span>{{ featured.level }}</span>
+            </div>
+          </div>
+        </article>
+      } @else {
+        <article class="featured-card placeholder-card">
+          <span class="featured-badge">Preparando vitrine</span>
+          <div class="placeholder-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="filter-section" id="courses">
+    <div>
+      <span class="section-tag">Catálogo</span>
+      <h2>Cursos pensados para construir projetos reais</h2>
+    </div>
+
+    <div class="filter-chips">
+      @for (category of categories(); track category) {
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+  </section>
+
+  @if (isLoading()) {
+    <section class="state-section">
+      <div class="loading-grid">
+        @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+          <article class="course-card skeleton-card">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+          </article>
+        }
+      </div>
+    </section>
+  } @else if (errorMessage()) {
+    <section class="state-section">
+      <div class="feedback-card error">
+        <h3>Falha ao buscar conteúdos</h3>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" class="primary-action" (click)="retry()">Tentar novamente</button>
+      </div>
+    </section>
+  } @else if (filteredCourses().length === 0) {
+    <section class="state-section">
+      <div class="feedback-card">
+        <h3>Nenhum curso encontrado</h3>
+        <p>Não há conteúdos disponíveis para o filtro selecionado no momento.</p>
+      </div>
+    </section>
+  } @else {
+    <section class="courses-grid">
+      @for (course of filteredCourses(); track trackByCourseId($index, course)) {
+        <article class="course-card">
+          <div class="card-image-wrapper">
+            <img [src]="course.imageUrl" [alt]="course.title" class="card-image" />
+            <span class="chip floating-chip">{{ course.category }}</span>
+          </div>
+
+          <div class="card-content">
+            <div class="card-rating">
+              <span>★ {{ course.rating }}</span>
+              <span>{{ course.students }} alunos</span>
+            </div>
+
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
+
+            <div class="card-meta">
+              <span>{{ course.author }}</span>
+              <span>{{ course.duration }}</span>
+            </div>
+
+            <div class="card-footer">
+              <span class="level-pill">{{ course.level }}</span>
+              <button type="button" class="ghost-action">Ver detalhes</button>
+            </div>
+          </div>
+        </article>
+      }
+    </section>
+  }
+</div>
+
+<router-outlet />
